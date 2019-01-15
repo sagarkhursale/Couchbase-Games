@@ -88,6 +88,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private void outputContents(Database database, String docId) {
+        // get the document
+        Document getDocument = database.getDocument(docId);
+
+        if (getDocument != null) {
+            for (String keyName : getDocument.getKeys()) {
+
+                Log.i(TAG, "Key : " + keyName + "" +
+                        "value : " + getDocument.getValue(keyName));
+
+            }
+        } else {
+            Log.i(TAG, "Doc is null");
+        }
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
