@@ -16,16 +16,21 @@ import com.couchbase.lite.DatabaseConfiguration;
 import com.couchbase.lite.Document;
 import com.couchbase.lite.MutableDocument;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
     private final String DATABASE = "couchbase_games";
 
     private Score[] scores = {
-            new Score("john@example.com", "John Cena", 42),
-            new Score("paul@example.com", "Paul Stone", 56),
+            new Score("john@example.com", "John Adams", 42),
+            new Score("paul@example.com", "Paul Stone", 58),
+            new Score("jane@example.com", "Jane Smith", 100),
             new Score("sally@example.com", "Sally Brown", 121)
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,91 +69,102 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Create the document
-        String documentId = createDocument(database);
+        createHighScores(database);
 
         // Get and output the contents
-        outputContents(database, documentId);
+        outputContents(database);
 
         // Update the document and add an attachment
-        updateDocument(database, documentId);
+        updateHighScores(database);
 
         // Get and output the contents
-        outputContents(database, documentId);
+        outputContents(database);
 
-        // Delete the new document
-        deleteDocument(database, documentId);
+        // end
     }
 
 
-    private String createDocument(Database database) {
-        // create doc with random ID
-        MutableDocument mutableDocument = new MutableDocument();
+    /**
+     * Creates the high scores
+     *
+     * @param database The CBL database
+     */
+    private void createHighScores(Database database) {
+        for (Score score : scores) {
+            // Create a new document and with the email address as the ID
+            MutableDocument scoreDocument = new MutableDocument(score.getEmail());
 
-        String docID = mutableDocument.getId();
-        Log.i(TAG, "CB - Generated doc ID is : " + docID);
+            // Add the data for the score
+            scoreDocument.setString("email", score.getEmail());
+            scoreDocument.setString("name", score.getName());
+            scoreDocument.setInt("score", score.getScore());
 
-        mutableDocument.setString("name", "Sagar K");
-        mutableDocument.setString("score", "42");
-
-        try {
-            // save the properties to the document
-            // the data is now persisted to database
-            database.save(mutableDocument);
-        } catch (CouchbaseLiteException e) {
-            Log.i(TAG, "CB-2 Error : " + e.toString());
-        }
-
-        return docID;
-    }
-
-
-    private void outputContents(Database database, String docId) {
-        // get the document
-        Document getDocument = database.getDocument(docId);
-
-        if (getDocument != null) {
-            for (String keyName : getDocument.getKeys()) {
-
-                Log.i(TAG, "Key : " + keyName + "" +
-                        "value : " + getDocument.getValue(keyName));
-
-            }
-        } else {
-            Log.i(TAG, "Doc is null");
-        }
-    }
-
-
-    private void updateDocument(Database database, String docId) {
-        Document getDocument = database.getDocument(docId);
-
-        // update doc with more data
-        MutableDocument updateDoc = getDocument.toMutable();
-
-        if (updateDoc != null) {
             try {
-
-                updateDoc.setString("score", "1337");
-                updateDoc.setString("game", "Space Invader");
-
-                database.save(updateDoc);
-
+                // Save the document to the database
+                database.save(scoreDocument);
             } catch (CouchbaseLiteException e) {
-                Log.i(TAG, "CB-3 Error : " + e.toString());
+                Log.e(TAG, "Error saving", e);
             }
-
         }
     }
 
 
-    private void deleteDocument(Database database, String docId) {
-        Document deleteDoc = database.getDocument(docId);
+    /**
+     * Outputs the contents of the high scores
+     *
+     * @param database The CBL database
+     */
+    private void outputContents(Database database) {
+        // Create a new array to score the data from the database
+        ArrayList<Score> scoresFromDatabase = new ArrayList<Score>();
 
-        if (deleteDoc != null) {
-            try {
-                database.delete(deleteDoc);
-            } catch (CouchbaseLiteException e) {
-                Log.i(TAG, "CB-4 Error : " + e.toString());
+        for (Score score : scores) {
+            // Get the document
+            Document getDocument = database.getDocument(score.getEmail());
+
+            if (getDocument != null) {
+                // Create a score object from the values
+                String email = getDocument.getString("email");
+                String name = getDocument.getString("name");
+                int scoreVal = getDocument.getInt("score");
+
+                scoresFromDatabase.add(new Score(email, name, scoreVal));
+            } else {
+                Log.i(TAG, "The Document was null for " + score.getEmail());
+            }
+        }
+
+        // Output all of the scores
+        for (Score scoreFromDatabase : scoresFromDatabase) {
+            Log.i(TAG, scoreFromDatabase.toString());
+        }
+    }
+
+    /**
+     * Updates the document
+     *
+     * @param database The CBL database
+     */
+    private void updateHighScores(Database database) {
+        Random random = new Random();
+
+        for (Score score : scores) {
+            Document updateDocument = database.getDocument(score.getEmail());
+
+            if (updateDocument != null) {
+                try {
+                    // Change to a mutable document
+                    MutableDocument mutableDocument = updateDocument.toMutable();
+
+                    // Update the document with more data
+                    mutableDocument.setInt("score", random.nextInt(1000000));
+                    mutableDocument.setString("date", "2015-05-01");
+
+                    // Save the document to the database
+                    database.save(mutableDocument);
+                } catch (CouchbaseLiteException e) {
+                    Log.e(TAG, "Error saving", e);
+                }
             }
         }
     }
