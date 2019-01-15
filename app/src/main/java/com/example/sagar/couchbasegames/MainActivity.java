@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
     private final String DATABASE = "couchbase_games";
 
+
+
     private Database mDatabase;
 
 
