@@ -60,8 +60,23 @@ public class MainActivity extends AppCompatActivity {
             database = new Database(DATABASE, configuration);
         } catch (CouchbaseLiteException e) {
             Log.i(TAG, "createScore() : " + e.toString());
+            return;
         }
 
+        // Create the document
+        String documentId = createDocument(database);
+
+        // Get and output the contents
+        outputContents(database, documentId);
+
+        // Update the document and add an attachment
+        updateDocument(database, documentId);
+
+        // Get and output the contents
+        outputContents(database, documentId);
+
+        // Delete the new document
+        deleteDocument(database, documentId);
     }
 
 
@@ -85,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         return docID;
     }
-
-
-
 
 
     private void outputContents(Database database, String docId) {
