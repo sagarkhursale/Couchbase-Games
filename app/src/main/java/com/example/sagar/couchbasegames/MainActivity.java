@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void createDocument() {
+
         // create doc with random ID
         MutableDocument mutableDocument = new MutableDocument();
 
@@ -78,6 +79,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private void getDocument(Database database){
+        // Retrieve doc from database
+        Document document=database.getDocument("sagar@example.com");
+
+        String value=document.getString("name");
+        String score=document.getString("score");
+
+        // Display the value from retrieved doc
+        Log.i(TAG,"Value is : "+value);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
