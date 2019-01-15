@@ -87,17 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void getDocument(Database database) {
-        // Retrieve doc from database
-        Document document = database.getDocument("sagar@example.com");
 
-        String value = document.getString("name");
-        String score = document.getString("score");
-
-        // Display the value from retrieved doc
-        Log.i(TAG, "Value is : " + value);
-
-    }
 
 
     private void outputContents(Database database, String docId) {
