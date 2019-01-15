@@ -9,7 +9,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
+import com.couchbase.lite.DatabaseConfiguration;
+
 public class MainActivity extends AppCompatActivity {
+
+    private final String TAG = MainActivity.class.getSimpleName();
+    private final String DATABASE = "couchbase_games";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,27 +34,38 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // Helper Object
+        DatabaseConfiguration configuration = new DatabaseConfiguration(
+                getApplicationContext());
+
+        try {
+            Database database = new Database(DATABASE, configuration);
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+
+        //
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    // END
 }
