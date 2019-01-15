@@ -21,16 +21,18 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
     private final String DATABASE = "couchbase_games";
 
-
-
-    private Database mDatabase;
-
+    private Score[] scores = {
+            new Score("john@example.com", "John Cena", 42),
+            new Score("paul@example.com", "Paul Stone", 56),
+            new Score("sally@example.com", "Sally Brown", 121)
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -42,17 +44,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Helper Object
-        DatabaseConfiguration configuration = new DatabaseConfiguration(
-                getApplicationContext());
+        createScore();
+        //
+    }
+
+
+    private void createScore() {
+        Database database = null;
 
         try {
-            mDatabase = new Database(DATABASE, configuration);
+            // Helper Object
+            DatabaseConfiguration configuration = new DatabaseConfiguration(
+                    getApplicationContext());
+
+            database = new Database(DATABASE, configuration);
         } catch (CouchbaseLiteException e) {
-            Log.i(TAG, "CB-1 Error : " + e.toString());
+            Log.i(TAG, "createScore() : " + e.toString());
         }
 
-        //
     }
 
 
