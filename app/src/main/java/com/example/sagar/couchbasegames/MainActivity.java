@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         MutableDocument mutableDocument = new MutableDocument();
 
         String docID = mutableDocument.getId();
-        Log.i(TAG, "CB - Generated doc ID is : " + mutableDocument.getId());
+        Log.i(TAG, "CB - Generated doc ID is : " + docID);
 
         mutableDocument.setString("name", "Sagar K");
         mutableDocument.setString("score", "42");
@@ -129,12 +129,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void deleteDocument(Database database, String docId) {
-        Document document = database.getDocument(docId);
+        Document deleteDoc = database.getDocument(docId);
 
-        try {
-            database.delete(document);
-        } catch (CouchbaseLiteException e) {
-            Log.i(TAG, "CB-4 Error : " + e.toString());
+        if (deleteDoc != null) {
+            try {
+                database.delete(deleteDoc);
+            } catch (CouchbaseLiteException e) {
+                Log.i(TAG, "CB-4 Error : " + e.toString());
+            }
         }
     }
 
