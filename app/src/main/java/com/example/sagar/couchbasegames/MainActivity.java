@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,11 +13,15 @@ import android.view.MenuItem;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.DatabaseConfiguration;
+import com.couchbase.lite.Document;
+import com.couchbase.lite.MutableDocument;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
     private final String DATABASE = "couchbase_games";
+
+    private Database mDatabase;
 
 
     @Override
@@ -40,12 +45,37 @@ public class MainActivity extends AppCompatActivity {
                 getApplicationContext());
 
         try {
-            Database database = new Database(DATABASE, configuration);
+            mDatabase = new Database(DATABASE, configuration);
         } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
+            Log.i(TAG, "CB-1 Error : " + e.toString());
         }
 
         //
+    }
+
+
+    private void createDocument() {
+        // create doc with random ID
+        MutableDocument mutableDocument = new MutableDocument();
+
+        Log.i(TAG, "CB - Generated doc ID is : " + mutableDocument.getId());
+
+        // create doc with specific ID
+        MutableDocument idDocument = new MutableDocument("sagar@example.com");
+
+        Log.i(TAG, "CB - specific doc ID : " + idDocument.getId());
+
+        idDocument.setString("name", "Sagar K");
+        idDocument.setString("score", "42");
+
+        try {
+            // save the properties to the document
+            // the data is now persisted to database
+            mDatabase.save(mutableDocument);
+        } catch (CouchbaseLiteException e) {
+            Log.i(TAG, "CB-2 Error : " + e.toString());
+        }
+
     }
 
 
