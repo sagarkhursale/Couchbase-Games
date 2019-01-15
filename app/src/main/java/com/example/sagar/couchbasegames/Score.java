@@ -1,6 +1,8 @@
 package com.example.sagar.couchbasegames;
 
 
+import android.support.annotation.NonNull;
+
 public class Score {
 
     private String email, name;
@@ -12,7 +14,6 @@ public class Score {
         this.name = name;
         this.score = score;
     }
-
 
 
     public String getEmail() {
@@ -45,5 +46,12 @@ public class Score {
     }
 
 
-    // END
+    @NonNull
+    @Override
+    public String toString() {
+        return email + "\t\t" + name + "\t\t" + score;
+    }
+
+
+// END
 }

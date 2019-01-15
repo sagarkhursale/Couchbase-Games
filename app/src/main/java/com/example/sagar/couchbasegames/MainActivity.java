@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * Updates the document
      *
