@@ -106,6 +106,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void updateDocument(Database database, String docId) {
+        Document getDocument = database.getDocument(docId);
+
+        // update doc with more data
+        MutableDocument updateDoc = getDocument.toMutable();
+
+        if (updateDoc != null) {
+            try {
+
+                updateDoc.setString("score", "1337");
+                updateDoc.setString("game", "Space Invader");
+
+                database.save(updateDoc);
+
+            } catch (CouchbaseLiteException e) {
+                Log.i(TAG, "CB-3 Error : " + e.toString());
+            }
+
+        }
+    }
+
+
+    private void deleteDocument(Database database, String docId) {
+        Document document = database.getDocument(docId);
+
+        try {
+            database.delete(document);
+        } catch (CouchbaseLiteException e) {
+            Log.i(TAG, "CB-4 Error : " + e.toString());
+        }
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
