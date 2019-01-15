@@ -54,41 +54,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void createDocument() {
-
+    private String createDocument(Database database) {
         // create doc with random ID
         MutableDocument mutableDocument = new MutableDocument();
 
+        String docID = mutableDocument.getId();
         Log.i(TAG, "CB - Generated doc ID is : " + mutableDocument.getId());
 
-        // create doc with specific ID
-        MutableDocument idDocument = new MutableDocument("sagar@example.com");
-
-        Log.i(TAG, "CB - specific doc ID : " + idDocument.getId());
-
-        idDocument.setString("name", "Sagar K");
-        idDocument.setString("score", "42");
+        mutableDocument.setString("name", "Sagar K");
+        mutableDocument.setString("score", "42");
 
         try {
             // save the properties to the document
             // the data is now persisted to database
-            mDatabase.save(mutableDocument);
+            database.save(mutableDocument);
         } catch (CouchbaseLiteException e) {
             Log.i(TAG, "CB-2 Error : " + e.toString());
         }
 
+        return docID;
     }
 
 
-    private void getDocument(Database database){
+    private void getDocument(Database database) {
         // Retrieve doc from database
-        Document document=database.getDocument("sagar@example.com");
+        Document document = database.getDocument("sagar@example.com");
 
-        String value=document.getString("name");
-        String score=document.getString("score");
+        String value = document.getString("name");
+        String score = document.getString("score");
 
         // Display the value from retrieved doc
-        Log.i(TAG,"Value is : "+value);
+        Log.i(TAG, "Value is : " + value);
 
     }
 
